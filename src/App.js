@@ -17,7 +17,6 @@ class App extends Component {
 
 componentDidMount(){
   this.dofetch()
-  
 }
 
  dofetch(){
@@ -55,18 +54,6 @@ componentDidMount(){
           rates: data.rates,
           availBtns: data.rates
         }); 
-        // console.log("testing");
-        // console.log(this.state.rates);
-        // const baseList = Object.keys(this.state.rates);
-        // const ratesList = Object.entries(this.state.rates);
-        // console.log("Base List...", baseList);
-        // console.log("Rates List...", ratesList);
-        // this.setState({
-        //   countryabr: baseList
-        // }); 
-        // console.log("is this an array?",this.state.countryabr)
-
-        
 
         // 404 (not working)
         if (!data.main) {
@@ -87,10 +74,14 @@ componentDidMount(){
     }
 
     onBtnSelect(ctry){
-      let selectedBtns = this.state.selectedBtns.slice();
+      let selectedBtns = this.state.selectedBtns.concat(ctry);
+      // this.setState({ selectedBtns: selectedBtns });
+      // console.log('selectedButtons', selectedBtns);
+      // console.log('this.state.availablebuttons', this.state.availBtns);
       let availBtns = Object.keys(this.state.availBtns).slice(ctry);
-      const btn = availBtns[ctry];
-      console.log(btn);
+      // this.setState({ availBtns: availBtns });
+      const btn = availBtns;
+      console.log("buttons", btn);
       selectedBtns.push(btn);
       console.log(availBtns);
       availBtns.splice(btn, 1);
@@ -98,11 +89,12 @@ componentDidMount(){
         availBtns : availBtns,
         selectedBtns: selectedBtns,
       });
+      console.log('selectedButtons', selectedBtns);
+      console.log('this.state.availablebuttons', this.state.availBtns);
       console.log(this.state.availBtns);
-      console.log(this.state.selectedBtns)
+      console.log(this.state.selectedBtns);
     }
   
- 
    onBtnDeselect(ctry){
       let selectedBtns = this.state.selectedBtns.slice();
       let availBtns = Object.keys(this.state.availBtns).slice(ctry);
@@ -132,12 +124,12 @@ componentDidMount(){
       <input placeholder="Enter Currency"
             value={this.state.baseSet} 
             onChange={this.onInputChange}/>
-   <button onClick={this.onBaseChange}>Select</button>
+        <button onClick={this.onBaseChange}>Select</button>
       </div>
      </div>
 
      <div className="Chart-buttonSpace">
-     {
+            {
               Object.keys(this.state.availBtns).map((ctry) => ( 
                 <div>
                     <button onClick={() => this.onBtnSelect(ctry)} class="Chart-navButton">
@@ -146,22 +138,22 @@ componentDidMount(){
                 </div>
               ))
             } 
-          </div>
+      </div>
 
      <div className="Chart-header">
             <p> Exchange Rate of 1 {this.state.currentcy} in Other Countries</p>
      </div> 
      <div className="Chart"> 
-              {
+            {
                 Object.keys(this.state.selectedBtns).map((country) => (
-                    <div className="Chart-bar"style= {{height: this.state.rates[country] * 10 + "px"}}>
+                    <div className="Chart-bar"style= {{height: "200px"}}>
                     {country}
                     </div>               
                 ))
             }
-</div>
-<div className="Chart--buttonBtm">
-     {
+      </div>
+       <div className="Chart--buttonBtm">
+            {
               Object.keys(this.state.selectedBtns).map((ctry) => ( 
                 <div>
                     <button onClick={() => this.onBtnDeselect(ctry)} class="Chart-navButton">
@@ -170,7 +162,7 @@ componentDidMount(){
                 </div>
               ))
             } 
-          </div>
+        </div>
     </div>
     </div>
   );
