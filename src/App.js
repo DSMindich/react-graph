@@ -11,10 +11,7 @@ class App extends Component {
     availBtns: [],
     selectedBtns:[],
   }
-// Step 1: make onBtnSelect add the currency to the selectedBars array
-// Step 2: make onBtnSelect remove the currency from the selectedBars array if it's already there
-// Step 3: make bars only display in render function IF they appear in selectedBars
-
+// Sets up initial data with USD as base 
 componentDidMount(){
   this.dofetch()
 }
@@ -32,13 +29,13 @@ componentDidMount(){
       console.log(data.rates);
       this.setState({
         rates : data.rates,
-        availBtns: data.rates,
+        availBtns: Object.entries(data.rates),
       });
-      console.log(this.state.availBtns)
+      console.log('THIS ONE', this.state.availBtns)
       console.log(this.state.selectedBtns)
   });
   }
-
+// Changes data to typed in base 
   onBaseChange = () => {
     console.log('hitting refresh', this.state.baseSet);
     let currency = this.state.baseSet
@@ -52,10 +49,9 @@ componentDidMount(){
         console.log('receiving data', data);
         this.setState({
           rates: data.rates,
-          availBtns: data.rates
         }); 
 
-        // 404 (not working)
+        // 404 (not working) might try and find time to ask about this
         if (!data.main) {
           this.setState({
             location: "Not found.",
@@ -65,6 +61,7 @@ componentDidMount(){
       });
     }
 
+// Hooks up input typing
     onInputChange = (ev) => {
       let value = ev.target.value;
       console.log('getting a new value!', value);
@@ -72,41 +69,33 @@ componentDidMount(){
         baseSet: value,
       });
     }
-
-    onBtnSelect(ctry){
-      let selectedBtns = this.state.selectedBtns.concat(ctry);
-      // this.setState({ selectedBtns: selectedBtns });
-      // console.log('selectedButtons', selectedBtns);
-      // console.log('this.state.availablebuttons', this.state.availBtns);
-      let availBtns = Object.keys(this.state.availBtns).slice(ctry);
-      // this.setState({ availBtns: availBtns });
-      const btn = availBtns;
-      console.log("buttons", btn);
-      selectedBtns.push(btn);
-      console.log(availBtns);
-      availBtns.splice(btn, 1);
-      this.setState({
-        availBtns : availBtns,
-        selectedBtns: selectedBtns,
-      });
-      console.log('selectedButtons', selectedBtns);
-      console.log('this.state.availablebuttons', this.state.availBtns);
-      console.log(this.state.availBtns);
-      console.log(this.state.selectedBtns);
-    }
-  
-   onBtnDeselect(ctry){
+//Moves button from top to bottom, "activated," section
+    onBtnSelect(index){
+      let availBtns = this.state.availBtns.slice();
       let selectedBtns = this.state.selectedBtns.slice();
-      let availBtns = Object.keys(this.state.availBtns).slice(ctry);
-      const btn = availBtns[ctry];
-      availBtns.push(btn);
-      selectedBtns.splice(btn, 1);
+      let mvBtn = availBtns[index];
+      selectedBtns.push(mvBtn);
+      availBtns.splice(index,1);
       this.setState({
         availBtns : availBtns,
         selectedBtns: selectedBtns,
       });
-      console.log(this.state.availBtns);
-      console.log(this.state.selectedBtns)
+      console.log('this.state.availablebuttons', this.state.availablebuttons);
+      console.log('selected btns', this.state.selectedBtns)
+    }
+  //Moves buttons back to top, "inactive," state
+   onBtnDeselect(index){
+      let selectedBtns = this.state.selectedBtns.slice();
+      let availBtns = this.state.availBtns.slice();
+      let mvBtn = selectedBtns[index];
+      availBtns.push(mvBtn);
+      selectedBtns.splice(index, 1);
+      this.setState({
+        availBtns : availBtns,
+        selectedBtns: selectedBtns,
+      });
+      console.log('this.state.availablebuttons', this.state.availablebuttons);
+      console.log('selected btns', this.state.selectedBtns)
     }
   
   render() {
@@ -122,7 +111,6 @@ componentDidMount(){
       </div>
       <div className="Nav-search"> Set base currency:
       <input placeholder="Enter Currency"
-            value={this.state.baseSet} 
             onChange={this.onInputChange}/>
         <button onClick={this.onBaseChange}>Select</button>
       </div>
@@ -130,10 +118,10 @@ componentDidMount(){
 
      <div className="Chart-buttonSpace">
             {
-              Object.keys(this.state.availBtns).map((ctry) => ( 
+              (this.state.availBtns).map((ctry, index) => ( 
                 <div>
-                    <button onClick={() => this.onBtnSelect(ctry)} class="Chart-navButton">
-                        {ctry}
+                    <button onClick={() => this.onBtnSelect(index)} class="Chart-navButton">
+                        {ctry[0]}
                     </button>
                 </div>
               ))
@@ -145,19 +133,19 @@ componentDidMount(){
      </div> 
      <div className="Chart"> 
             {
-                Object.keys(this.state.selectedBtns).map((country) => (
-                    <div className="Chart-bar"style= {{height: "200px"}}>
-                    {country}
+                this.state.selectedBtns.map((ctry) => (
+                    <div className="Chart-bar"style= {{height: (this.state.rates[ctry[0]] * 10) + 'px'}}>
+                    {ctry[0]}
                     </div>               
                 ))
             }
       </div>
        <div className="Chart--buttonBtm">
             {
-              Object.keys(this.state.selectedBtns).map((ctry) => ( 
+              this.state.selectedBtns.map((ctry, index) => ( 
                 <div>
-                    <button onClick={() => this.onBtnDeselect(ctry)} class="Chart-navButton">
-                        {ctry}
+                    <button onClick={() => this.onBtnDeselect(index)} class="Chart-navButton">
+                        {ctry[0]}
                     </button>
                 </div>
               ))

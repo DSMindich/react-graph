@@ -50,6 +50,7 @@
     background-color: var(--chartbg);
     justify-content: space-around;
     align-items: flex-end;   
+    
 }
 .Chart-header{
     display: flex;
@@ -94,6 +95,7 @@
     border-left: 5px solid var(--barborder);
     border-right: 5px solid var(--barborder);
     font-size: 24px;
+    max-height: 99%
 }
 .Chart-bar:hover{
     animation: ColorSwap 4s;
