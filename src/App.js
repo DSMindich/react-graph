@@ -135,7 +135,7 @@ componentDidMount(){
             {
                 this.state.selectedBtns.map((ctry) => (
                     <div className="Chart-bar"style= {{height: (this.state.rates[ctry[0]] * 10) + 'px'}}>
-                    {ctry[0]}
+                    {ctry[0]} {(ctry[1]).toFixed(2)}
                     </div>               
                 ))
             }
